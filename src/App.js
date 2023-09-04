@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import CoinbaseWalletCard from './components/connectorCards/CoinbaseWalletCard'
+import GnosisSafeCard from './components/connectorCards/GnosisSafeCard'
+import MetaMaskCard from './components/connectorCards/MetaMaskCard'
+import NetworkCard from './components/connectorCards/NetworkCard'
+import WalletConnectV2Card from './components/connectorCards/WalletConnectV2Card'
+import ProviderExample from './components/ProviderExample'
+import { MAINNET_CHAINS } from './chains'
 
-function App() {
+const [mainnet, ...optionalChains] = Object.keys(MAINNET_CHAINS).map(Number)
+
+export default function Home() {
+  console.log({mainnet, optionalChains})
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <ProviderExample />
+      <div style={{ display: 'flex', flexFlow: 'wrap', fontFamily: 'sans-serif' }}>
+        <MetaMaskCard />
+        <WalletConnectV2Card />
+        <CoinbaseWalletCard />
+        {/* <NetworkCard /> */}
+        {/* <GnosisSafeCard /> */}
+      </div>
+    </>
+  )
 }
-
-export default App;

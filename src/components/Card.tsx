@@ -6,12 +6,7 @@ import type { MetaMask } from '@web3-react/metamask'
 import type { Network } from '@web3-react/network'
 import type { WalletConnect } from '@web3-react/walletconnect'
 import type { WalletConnect as WalletConnectV2 } from '@web3-react/walletconnect-v2'
-
-import { getName } from '../utils'
-import { Accounts } from './Accounts'
-import { Chain } from './Chain'
 import { ConnectWithSelect } from './ConnectWithSelect'
-import { Status } from './Status'
 
 interface Props {
   connector: MetaMask | WalletConnect | WalletConnectV2 | CoinbaseWallet | Network | GnosisSafe

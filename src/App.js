@@ -1,25 +1,40 @@
-import CoinbaseWalletCard from './components/connectorCards/CoinbaseWalletCard'
-import GnosisSafeCard from './components/connectorCards/GnosisSafeCard'
-import MetaMaskCard from './components/connectorCards/MetaMaskCard'
-import NetworkCard from './components/connectorCards/NetworkCard'
-import WalletConnectV2Card from './components/connectorCards/WalletConnectV2Card'
-import ProviderExample from './components/ProviderExample'
-import { MAINNET_CHAINS } from './chains'
+import React, {useEffect} from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import NewWeb3Provider from "./components/ProviderExample";
+import Home from "./components/Home";
+import NotFound from "./components/NotFound";
+import { ThemeProvider } from "@mui/material";
+import theme from "./components/CSS/Theme";
+import { initializeConnector } from '@web3-react/core'
+import { MetaMask } from '@web3-react/metamask';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const [mainnet, ...optionalChains] = Object.keys(MAINNET_CHAINS).map(Number)
+export const [metaMask, hooks] = initializeConnector((actions) => new MetaMask({ actions }))
 
-export default function Home() {
-  console.log({mainnet, optionalChains})
+
+export default function App() {
+  // console.log({mainnet, optionalChains})
+  useEffect(() => {
+    void metaMask.connectEagerly().then((res) => {
+      console.log(res)
+    }).catch(() => {
+      console.debug('Failed to connect eagerly to metamask')
+    })
+  }, [])
   return (
     <>
-      <ProviderExample />
-      <div style={{ display: 'flex', flexFlow: 'wrap', fontFamily: 'sans-serif' }}>
-        <MetaMaskCard />
-        <WalletConnectV2Card />
-        <CoinbaseWalletCard />
-        {/* <NetworkCard /> */}
-        {/* <GnosisSafeCard /> */}
-      </div>
+      <NewWeb3Provider>
+        <ThemeProvider theme={theme}>
+          <BrowserRouter>
+            <Routes>
+              <Route exact path="/" element={<Home />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+          <ToastContainer position="bottom-center" theme="colored" />
+        </ThemeProvider>
+      </NewWeb3Provider>
     </>
-  )
+  );
 }

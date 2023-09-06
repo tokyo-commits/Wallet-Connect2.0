@@ -42,10 +42,10 @@ function Child () {
   return null
 }
 
-export default function ProviderExample() {
+export default function Web3ProviderNew({children}:any) {
   return (
     <Web3ReactProvider connectors={connectors}>
-      <Child />
+      {children}
     </Web3ReactProvider>
   )
 }

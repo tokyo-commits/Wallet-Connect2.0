@@ -19,7 +19,9 @@ export default function MetaMaskCard() {
 
   // attempt to connect eagerly on mount
   useEffect(() => {
-    void metaMask.connectEagerly().catch(() => {
+    void metaMask.connectEagerly().then((res) => {
+      console.log(res)
+    }).catch(() => {
       console.debug('Failed to connect eagerly to metamask')
     })
   }, [])

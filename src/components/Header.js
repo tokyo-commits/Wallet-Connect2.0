@@ -123,6 +123,7 @@ const useStyles = makeStyles()((theme) => {
     appBar: {
       backgroundColor: "#FFFFFF",
       padding: "10px",
+      zIndex:0,
       [theme.breakpoints.up("md")]: {
         padding: "10px 30px",
       },

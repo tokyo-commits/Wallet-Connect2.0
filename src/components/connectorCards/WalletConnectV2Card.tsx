@@ -29,11 +29,13 @@ export default function WalletConnectV2Card() {
   }, [])
 
   // attempt to connect eagerly on mount
-  useEffect(() => {
-    walletConnectV2.connectEagerly().catch((error) => {
-      console.debug('Failed to connect eagerly to walletconnect', error)
-    })
-  }, [])
+  // useEffect(() => {
+  //   walletConnectV2.connectEagerly().then((res) => {
+  //     console.log(res)
+  //   }).catch((error) => {
+  //     console.log('Failed to connect eagerly to walletConnectV2'+error)
+  //   })
+  // }, [])
 
   return (
     <Card

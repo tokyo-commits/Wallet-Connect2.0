@@ -16,7 +16,7 @@ export const [metaMask, hooks] = initializeConnector((actions) => new MetaMask({
 export default function App() {
   // console.log({mainnet, optionalChains})
   useEffect(() => {
-    void metaMask.connectEagerly().then((res) => {
+    metaMask.connectEagerly().then((res) => {
       console.log(res)
     }).catch(() => {
       console.debug('Failed to connect eagerly to metamask')

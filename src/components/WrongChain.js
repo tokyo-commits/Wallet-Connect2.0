@@ -62,7 +62,7 @@ export default function TransitionsModal({ paymentData }) {
           await provider?.send("wallet_addEthereumChain", [chainConfig]);
           setTimeout(() => {
             window.location.reload();
-          }, 1000);
+          }, 500);
         } catch (addError) {
           console.error(`Add chain error ${addError}`);
           console.log(addError)

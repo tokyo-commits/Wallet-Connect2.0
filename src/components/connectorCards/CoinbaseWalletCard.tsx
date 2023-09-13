@@ -17,12 +17,14 @@ export default function CoinbaseWalletCard() {
 
   const [error, setError] = useState(undefined)
 
-  // attempt to connect eagerly on mount
-  useEffect(() => {
-    void coinbaseWallet.connectEagerly().catch(() => {
-      console.debug('Failed to connect eagerly to coinbase wallet')
-    })
-  }, [])
+  // // attempt to connect eagerly on mount
+  // useEffect(() => {
+  //   void coinbaseWallet.connectEagerly().then((res) => {
+  //     console.log(res)
+  //   }).catch((error) => {
+  //     console.log('Failed to connect eagerly to coinbase'+error)
+  //   })
+  // }, [])
 
   return (
     <Card

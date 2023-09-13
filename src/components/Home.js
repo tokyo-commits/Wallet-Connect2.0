@@ -25,7 +25,7 @@ import { truncateAddress } from "./CommonFunctions";
 import { toast } from "react-toastify";
 import WrongChain from "./WrongChain";
 
-const Home = () => {
+const Home = (props) => {
   const { classes } = useStyles();
   const { account, provider } = useWeb3React();
   const lib = provider;
@@ -38,8 +38,6 @@ const Home = () => {
   const [isUserValid, setIsUserValid] = useState(false);
   const [isFinalTsx, setIsfinalTsx] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
-
-  // console.log( account, web3 );
 
   async function fetchData(url) {
     try {
@@ -74,7 +72,7 @@ const Home = () => {
             setIsUserValid(true);
             setShowLoader(false);
           }
-          console.log(account.toLowerCase() === decode.user_address.toLowerCase(), account.toLowerCase(), decode.user_address.toLowerCase())
+          // console.log(account.toLowerCase() === decode.user_address.toLowerCase(), account.toLowerCase(), decode.user_address.toLowerCase())
         }
       })
       .catch((error) => {
@@ -82,7 +80,7 @@ const Home = () => {
         setShowLoader(false);
       });
   };
-  console.log(paymentData);
+  // console.log(paymentData);
   const submitHashToDb = async (hash) => {
     const url = paymentData.save_transaction;
     const data = {

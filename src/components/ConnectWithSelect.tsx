@@ -60,6 +60,8 @@ export function ConnectWithSelect({
     }
   }, [desiredChainId, activeChainId]);
 
+  console.log({isActivating, isActive, isConnecting, connection:getName(connector)})
+
   const switchChain = useCallback(
     async (desiredChainId: number) => {
       setDesiredChainId(desiredChainId);
@@ -104,6 +106,8 @@ export function ConnectWithSelect({
     } else {
       setLoading({ coineBase: true, metamsk: false, walletConnect: false });
     }
+    const wallet =  getName(connector)
+    localStorage.setItem("walletType",wallet)
     void connector
       .activate()
       .then((res) => {

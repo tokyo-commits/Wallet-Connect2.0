@@ -17,14 +17,14 @@ export default function MetaMaskCard() {
 
   const [error, setError] = useState(undefined)
 
-  // attempt to connect eagerly on mount
-  useEffect(() => {
-    void metaMask.connectEagerly().then((res) => {
-      console.log(res)
-    }).catch(() => {
-      console.debug('Failed to connect eagerly to metamask')
-    })
-  }, [])
+  // // attempt to connect eagerly on mount
+  // useEffect(() => {
+  //   void metaMask.connectEagerly().then((res) => {
+  //     console.log(res)
+  //   }).catch((error) => {
+  //     console.log('Failed to connect eagerly to metamask'+error)
+  //   })
+  // }, [])
 
   return (
     <Card

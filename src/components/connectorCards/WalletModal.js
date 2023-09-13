@@ -13,7 +13,7 @@ export const style = {
   borderRadius: "10px",
   bgcolor: "background.paper",
   boxShadow: 24,
-  p: 2,
+  // p: 2,
 };
 
 const WalletModal = ({handleClose}) => {
@@ -31,7 +31,7 @@ const WalletModal = ({handleClose}) => {
       aria-describedby="modal-modal-description"
       sx={{zIndex: 9}}
     >
-      <Box sx={style}>
+      <Box sx={style} style={{padding: '16px'}}>
         <Box>
             <MetaMaskCard />
             <WalletConnectV2Card />

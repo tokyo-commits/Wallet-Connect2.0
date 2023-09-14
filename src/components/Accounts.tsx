@@ -3,11 +3,11 @@ import { formatEther } from "@ethersproject/units";
 import type { Web3ReactHooks } from "@web3-react/core";
 import React, { useEffect, useState } from "react";
 import Web3 from "web3";
-import boneABI from "./connectorCards/erc20ABI.json"
+import boneABI from "./connectorCards/erc20ABI.json";
 
 function useBalances(
   provider?: ReturnType<Web3ReactHooks["useProvider"]>,
-  accounts?: string[]
+  accounts?: string[],
 ): BigNumber[] | undefined {
   const [balances, setBalances] = useState<BigNumber[] | undefined>();
 
@@ -19,7 +19,7 @@ function useBalances(
       console.log({ accounts }); // lib.provider
       // getBalance()
       void Promise.all(
-        accounts.map((account) => provider.getBalance(account))
+        accounts.map((account) => provider.getBalance(account)),
       ).then((balances) => {
         if (stale) return;
         setBalances(balances);

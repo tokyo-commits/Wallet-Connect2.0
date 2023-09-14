@@ -93,7 +93,7 @@ const Home = (props) => {
       token_name: paymentData.symbol,
       transaction_amount: getUpdatedAmount(
         +paymentData.doc_amount,
-        paymentData.tokenComission / 100
+        paymentData.tokenComission / 100,
       ),
       decimal: paymentData.tokenDecimal,
       network: paymentData.token_network,
@@ -140,20 +140,28 @@ const Home = (props) => {
       const instance = new web3.eth.Contract(boneABI, token);
       const contract_instance = new web3.eth.Contract(
         tokenDepositABI,
-        data.contract_address
+        data.contract_address,
       );
-      const allowance = Number(await instance.methods.allowance(account, data.contract_address).call({ from: account }));
+      const allowance = Number(
+        await instance.methods
+          .allowance(account, data.contract_address)
+          .call({ from: account }),
+      );
       const symbol = await instance.methods.symbol().call();
       const tokenDecimal = Number(await instance.methods.decimals().call());
-      const balance = Number(await instance.methods.balanceOf(account).call({ from: account }));
-      const tokenComission = Number(await contract_instance.methods.checkCommision(token).call());
+      const balance = Number(
+        await instance.methods.balanceOf(account).call({ from: account }),
+      );
+      const tokenComission = Number(
+        await contract_instance.methods.checkCommision(token).call(),
+      );
 
       let approvalNedded;
       if (
         parseFloat(allowance / Math.pow(10, tokenDecimal)) >=
         getUpdatedAmount(
           parseFloat(data.doc_amount),
-          parseFloat(tokenComission / 100)
+          parseFloat(tokenComission / 100),
         )
       ) {
         approvalNedded = false;
@@ -191,9 +199,9 @@ const Home = (props) => {
         fromExponential(
           getUpdatedAmount(
             parseFloat(paymentData.doc_amount),
-            paymentData.tokenComission / 100
-          ) * Math.pow(10, paymentData.tokenDecimal)
-        )
+            paymentData.tokenComission / 100,
+          ) * Math.pow(10, paymentData.tokenDecimal),
+        ),
       );
       const instance = new web3.eth.Contract(boneABI, token);
       const gasFee = await instance.methods
@@ -246,12 +254,12 @@ const Home = (props) => {
       const amount = web3.utils.toBN(
         fromExponential(
           parseFloat(paymentData.doc_amount) *
-            Math.pow(10, paymentData.tokenDecimal)
-        )
+            Math.pow(10, paymentData.tokenDecimal),
+        ),
       );
       const instance = new web3.eth.Contract(
         tokenDepositABI,
-        paymentData.contract_address
+        paymentData.contract_address,
       );
       const gasFee = await instance.methods
         .depositToken(token, amount)
@@ -331,7 +339,7 @@ const Home = (props) => {
         paymentData.balance <
         getUpdatedAmount(
           +paymentData.doc_amount,
-          paymentData.tokenComission / 100
+          paymentData.tokenComission / 100,
         )
       ) {
         return "Insufficient Funds";
@@ -369,7 +377,9 @@ const Home = (props) => {
             <Box className={classes.hading}>
               <Typography align="center" className={classes.headingtext}>
                 {account
-                  ? paymentData.approvalNedded ? "Document Transaction Price Details" : "Payment Details"
+                  ? paymentData.approvalNedded
+                    ? "Document Transaction Price Details"
+                    : "Payment Details"
                   : "Allow Certicos to Connect to your wallet"}
               </Typography>
             </Box>
@@ -398,7 +408,7 @@ const Home = (props) => {
                       <Typography className={classes.innerTExtleft}>
                         {paymentData.doc_size_in_kb
                           ? Number.parseFloat(
-                              paymentData.doc_size_in_kb
+                              paymentData.doc_size_in_kb,
                             ).toFixed(2) + " KB"
                           : ""}
                       </Typography>
@@ -468,7 +478,9 @@ const Home = (props) => {
         <Box sx={style}>
           <Box className={classes.hading2}>
             <Typography align="center" className={classes.headingtext}>
-             {paymentData.approvalNedded ? "Transaction Approved":"CONGRATULATIONS !"}
+              {paymentData.approvalNedded
+                ? "Transaction Approved"
+                : "CONGRATULATIONS !"}
             </Typography>
           </Box>
           <Grid sx={{ padding: "20px" }}>
@@ -476,7 +488,9 @@ const Home = (props) => {
               align="center"
               style={{ padding: "20px", fontSize: "15px", fontWeight: "600" }}
             >
-             {paymentData.approvalNedded ? "Transaction Approved Successfully" : "Payment Submitted Successfully" }
+              {paymentData.approvalNedded
+                ? "Transaction Approved Successfully"
+                : "Payment Submitted Successfully"}
             </Typography>
             <div
               style={{
@@ -537,12 +551,14 @@ const Home = (props) => {
               <Typography align="center">
                 Your final Approval is required to deduct The{" "}
                 <b>
-                {getUpdatedAmount(
-                  +paymentData.doc_amount,
-                  paymentData.tokenComission / 100
-                )}{" "}
-                {paymentData.symbol}</b> from your wallet to Complete the
-                transaction and submit your document to the Approver.
+                  {getUpdatedAmount(
+                    +paymentData.doc_amount,
+                    paymentData.tokenComission / 100,
+                  )}{" "}
+                  {paymentData.symbol}
+                </b>{" "}
+                from your wallet to Complete the transaction and submit your
+                document to the Approver.
               </Typography>
             </Box>
             <Button
@@ -575,9 +591,10 @@ const Home = (props) => {
             </Typography>
             <Box>
               <Typography align="center">
-                Your Wallet address "<b>{truncateAddress(account)}</b>" is not same with the address you have
-                given while registration, Kindly establish a connection with the
-                "<b>{truncateAddress(paymentData.user_address)}</b>" in order to
+                Your Wallet address "<b>{truncateAddress(account)}</b>" is not
+                same with the address you have given while registration, Kindly
+                establish a connection with the "
+                <b>{truncateAddress(paymentData.user_address)}</b>" in order to
                 successfully finalize the transaction
               </Typography>
             </Box>

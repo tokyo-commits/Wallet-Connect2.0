@@ -1,15 +1,15 @@
 import { coinbaseWallet } from "./coinbaseWallet";
 import { metaMask } from "./metaMask";
 import { walletConnectV2 } from "./walletConnectV2";
-import { Connector } from '@web3-react/types'
+import { Connector } from "@web3-react/types";
 
-async function connect(connector:Connector, wallet:String) {
+async function connect(connector: Connector, wallet: String) {
   try {
     if (connector.connectEagerly) {
-      console.log("connecting egarly =>"+wallet)
+      console.log("connecting egarly =>" + wallet);
       await connector.connectEagerly();
     } else {
-      console.log("connecting active from egarly =>"+wallet)
+      console.log("connecting active from egarly =>" + wallet);
       await connector.activate();
     }
   } catch (error) {
@@ -18,8 +18,9 @@ async function connect(connector:Connector, wallet:String) {
 }
 
 export default function useEgarlyConnect() {
-  const walletType = localStorage.getItem("walletType") || "no connection found";
-  console.log({walletType})
+  const walletType =
+    localStorage.getItem("walletType") || "no connection found";
+  console.log({ walletType });
   if (walletType === "MetaMask") {
     connect(metaMask, walletType);
   } else if (walletType === "WalletConnect V2") {

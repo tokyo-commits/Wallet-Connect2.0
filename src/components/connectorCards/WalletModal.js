@@ -16,7 +16,7 @@ export const style = {
   // p: 2,
 };
 
-const WalletModal = ({handleClose}) => {
+const WalletModal = ({ handleClose }) => {
   const [open, setOpen] = useState(true);
 
   const onClose = () => {
@@ -29,13 +29,13 @@ const WalletModal = ({handleClose}) => {
       onClose={() => onClose()}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{zIndex: 9}}
+      sx={{ zIndex: 9 }}
     >
-      <Box sx={style} style={{padding: '16px'}}>
+      <Box sx={style} style={{ padding: "16px" }}>
         <Box>
-            <MetaMaskCard />
-            <WalletConnectV2Card />
-            <CoinbaseWalletCard />
+          <MetaMaskCard />
+          <WalletConnectV2Card />
+          <CoinbaseWalletCard />
         </Box>
       </Box>
     </Modal>

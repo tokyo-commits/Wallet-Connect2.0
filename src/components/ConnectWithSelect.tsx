@@ -60,7 +60,12 @@ export function ConnectWithSelect({
     }
   }, [desiredChainId, activeChainId]);
 
-  console.log({isActivating, isActive, isConnecting, connection:getName(connector)})
+  console.log({
+    isActivating,
+    isActive,
+    isConnecting,
+    connection: getName(connector),
+  });
 
   const switchChain = useCallback(
     async (desiredChainId: number) => {
@@ -94,11 +99,11 @@ export function ConnectWithSelect({
         setError(error);
       }
     },
-    [connector, activeChainId, setError]
+    [connector, activeChainId, setError],
   );
 
   const handleClick = () => {
-    setIsconnecting(true)
+    setIsconnecting(true);
     if (getName(connector) === "MetaMask") {
       setLoading({ metamsk: true, coineBase: false, walletConnect: false });
     } else if (getName(connector) === "WalletConnect V2") {
@@ -106,18 +111,18 @@ export function ConnectWithSelect({
     } else {
       setLoading({ coineBase: true, metamsk: false, walletConnect: false });
     }
-    const wallet =  getName(connector)
-    localStorage.setItem("walletType",wallet)
+    const wallet = getName(connector);
+    localStorage.setItem("walletType", wallet);
     void connector
       .activate()
       .then((res) => {
-        console.log(res)
-        setError(undefined)
+        console.log(res);
+        setError(undefined);
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
         setIsconnecting(false);
-        setError(err)
+        setError(err);
       });
   };
 
@@ -132,38 +137,42 @@ export function ConnectWithSelect({
   };
 
   const loaderRender = () => {
-    if(!error){
-    if (getName(connector) === "MetaMask") {
-      return (
-        <>
-          {loading.metamsk && (
-            <CircularProgress size={20} className={classes.loader} />
-          )}
-        </>
-      );
-    } else if (getName(connector) === "WalletConnect V2") {
-      return (
-        <>
-          {loading.walletConnect && (
-            <CircularProgress size={20} className={classes.loader} />
-          )}
-        </>
-      );
-    } else {
-      return (
-        <>
-          {loading.coineBase && (
-            <CircularProgress size={20} className={classes.loader} />
-          )}
-        </>
-      );
-    }
+    if (!error) {
+      if (getName(connector) === "MetaMask") {
+        return (
+          <>
+            {loading.metamsk && (
+              <CircularProgress size={20} className={classes.loader} />
+            )}
+          </>
+        );
+      } else if (getName(connector) === "WalletConnect V2") {
+        return (
+          <>
+            {loading.walletConnect && (
+              <CircularProgress size={20} className={classes.loader} />
+            )}
+          </>
+        );
+      } else {
+        return (
+          <>
+            {loading.coineBase && (
+              <CircularProgress size={20} className={classes.loader} />
+            )}
+          </>
+        );
+      }
     }
   };
 
   // console.log({ isConnecting, isActivating });
   return (
-    <Button disabled={isConnecting} className={classes.mainBox}  onClick={() => handleClick()}>
+    <Button
+      disabled={isConnecting}
+      className={classes.mainBox}
+      onClick={() => handleClick()}
+    >
       <Box className={classes.iconName}>
         <img src={getIcon()} alt="icon" className={classes.icons} />
         <Box className={classes.innerText}>
@@ -171,7 +180,11 @@ export function ConnectWithSelect({
             {getName(connector)}
           </Typography>
           {/* @ts-ignore */}
-            {error?.message ? <Typography className={classes.errormsg}>{error?.message}</Typography> : null}
+          {error?.message ? (
+            <Typography className={classes.errormsg}>
+              {error?.message}
+            </Typography>
+          ) : null}
         </Box>
       </Box>
       <Box>{loaderRender()}</Box>
@@ -225,12 +238,12 @@ export const useStyles = makeStyles()((theme) => {
       padding: "15px 10px",
       borderRadius: "10px",
       margin: "10px 2px",
-      width :'100%',
+      width: "100%",
       backgroundColor: "rgb(249, 249, 249)",
       "&:hover": {
         backgroundColor: "rgba(34, 34, 34, 0.07)",
       },
-      textTransform: 'none'
+      textTransform: "none",
     },
     disableBox: {
       display: "flex",
@@ -262,16 +275,16 @@ export const useStyles = makeStyles()((theme) => {
       margin: "auto 2px",
       padding: "12px 0",
     },
-    errormsg:{
-      fontSize: '12px',
-      color: 'red',
-      padding: '2px 12px',
-      flexWrap: 'wrap'
+    errormsg: {
+      fontSize: "12px",
+      color: "red",
+      padding: "2px 12px",
+      flexWrap: "wrap",
     },
-    innerText:{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: "flex-start"
-    }
+    innerText: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-start",
+    },
   };
 });

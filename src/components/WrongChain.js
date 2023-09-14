@@ -49,14 +49,14 @@ export default function TransitionsModal({ paymentData }) {
       if (switchError.code === 4902) {
         const chainConfig = {
           chainId: `0x${params.toString(16)}`, // This should be the appropriate chain ID for the Ethereum chain you're adding
-          chainName: 'BNB Smart Chain Testnet', // Replace with the actual name of the chain
+          chainName: "BNB Smart Chain Testnet", // Replace with the actual name of the chain
           nativeCurrency: {
-            name: 'tBNB', // Replace with the native currency's name
-            symbol: 'tBNB', // Replace with the currency's symbol
+            name: "tBNB", // Replace with the native currency's name
+            symbol: "tBNB", // Replace with the currency's symbol
             decimals: 18, // Replace with the currency's decimals
           },
-          rpcUrls: ['https://data-seed-prebsc-1-s3.binance.org:8545/'], // Replace with the actual RPC URL of the chain
-          blockExplorerUrls: ['https://testnet.bscscan.com/'], // Replace with the actual block explorer URL
+          rpcUrls: ["https://data-seed-prebsc-1-s3.binance.org:8545/"], // Replace with the actual RPC URL of the chain
+          blockExplorerUrls: ["https://testnet.bscscan.com/"], // Replace with the actual block explorer URL
         };
         try {
           await provider?.send("wallet_addEthereumChain", [chainConfig]);
@@ -65,7 +65,7 @@ export default function TransitionsModal({ paymentData }) {
           }, 500);
         } catch (addError) {
           console.error(`Add chain error ${addError}`);
-          console.log(addError)
+          console.log(addError);
         }
       }
       console.error(`Switch chain error ${switchError}`);
@@ -102,8 +102,8 @@ export default function TransitionsModal({ paymentData }) {
               </Typography>
               <Box>
                 <Typography align="center" sx={{ padding: "10px 0" }}>
-                  Click to switch your wallet chain to align with the {paymentData.token_network} token
-                  selected for transaction
+                  Click to switch your wallet chain to align with the{" "}
+                  {paymentData.token_network} token selected for transaction
                 </Typography>
               </Box>
               <Button

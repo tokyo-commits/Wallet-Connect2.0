@@ -1,70 +1,205 @@
-# Getting Started with Create React App
+# Wallet Connect Integration with the Latest @web3-react document by Revinfotech
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This readme file contains information on how you can use @web3-react/core to connect your Dapps with your wallets and establish decentralized connections and payments. It will cover connections with:
 
-## Available Scripts
+- Wallet Connect 2.0
+- Metamask
+- Coinbase
 
-In the project directory, you can run:
+## Follow the Steps Below
 
-### `npm start`
+Create a React/Next app and then add the following packages to your React/Next app using npm or yarn:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- @web3-react/core
+- @web3-react/metamask
+- @web3-react/walletconnect-v2
+- @web3-react/coinbase-wallet
+- @coinbase/wallet-sdk
+- @web3-react/url
+- @web3-react/types (if you are using TypeScript files or you want to build this app in TypeScript instead of JavaScript)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Create Connector Files (.ts/.js)
 
-### `npm test`
+1. Metamask
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```typescript
+import { initializeConnector } from '@web3-react/core';
+import { MetaMask } from '@web3-react/metamask';
 
-### `npm run build`
+export const [metaMask, hooks] = initializeConnector<MetaMask>((actions) => new MetaMask({ actions }));
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Wallet Connect 2.0
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```typescript
+import { initializeConnector } from '@web3-react/core'
+import { WalletConnect as WalletConnectV2 } from '@web3-react/walletconnect-v2'
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+export const [walletConnectV2, hooks] = initializeConnector<WalletConnectV2>(
+  (actions) =>
+    new WalletConnectV2({
+      actions,
+      options: {
+        projectId: 'YOUR_PROJECT_ID', // take project id from wallet connect 2.0 Visit https://walletconnect.com/ for more information.
+        chains: [1], //  by default only one mainnet chain allowed 
+        optionalChains:[], // you can added mainnet & testnet chains both here for ex. [1, 4, 5,96,57....]
+        showQrModal: true,
+      },
+    })
+)
+```
 
-### `npm run eject`
+3. CoinBase 
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```typescript
+import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
+import { initializeConnector } from '@web3-react/core'
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+export const [coinbaseWallet, hooks] = initializeConnector<CoinbaseWallet>(
+  (actions) =>
+    new CoinbaseWallet({
+      actions,
+      options: {
+        url:[], // you can added mainnet & testnet chains both here for ex. [1, 4, 5,96,57....]
+        appName: 'web3-react',
+      },
+    })
+)
+```
+### Next, Make Connections and Eager Connections with Hooks and Set the Provider in Your Root File
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```typescript
+import { hooks, metaMask } from '../../connectors/metaMask'
+import { hooks, walletConnectV2 } from '../../connectors/walletConnectV2'
+import { coinbaseWallet, hooks } from '../../connectors/coinbaseWallet'
 
-## Learn More
+const handleConnect = (metaMask || walletConnectV2 || coinbaseWallet) => { // you can get connecter from the above example
+ void connector
+      .activate()
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      });
+}
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### The Final Step - Set the Provider and Eagerly Connect in the Main app.js File
 
-### Code Splitting
+```typescript
+import React from 'react';
+import type { CoinbaseWallet } from '@web3-react/coinbase-wallet'
+import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
+import type { MetaMask } from '@web3-react/metamask'
+import type { Network } from '@web3-react/network'
+import type { WalletConnect } from '@web3-react/walletconnect'
+import type { WalletConnect as WalletConnectV2 } from '@web3-react/walletconnect-v2'
+import { coinbaseWallet, hooks as coinbaseWalletHooks } from '../connectors/coinbaseWallet'
+import { hooks as metaMaskHooks, metaMask } from '../connectors/metaMask'
+import { hooks as networkHooks, network } from '../connectors/network'
+import { hooks as walletConnectHooks, walletConnect } from '../connectors/walletConnect'
+import { hooks as walletConnectV2Hooks, walletConnectV2 } from '../connectors/walletConnectV2'
+import useEgarConnect from "../connectors/useEgarlyConnect"
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+const connectors: [MetaMask | WalletConnect | WalletConnectV2 | CoinbaseWallet | Network, Web3ReactHooks][] = [
+  [metaMask, metaMaskHooks],
+  [walletConnect, walletConnectHooks],
+  [walletConnectV2, walletConnectV2Hooks],
+  [coinbaseWallet, coinbaseWalletHooks],
+  [network, networkHooks],
+]
 
-### Analyzing the Bundle Size
+export default function Web3ProviderNew({children}:any) {
+  useEgarConnect()
+  return (
+    <Web3ReactProvider connectors={connectors}>
+      {children}
+    </Web3ReactProvider>
+  )
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## useEagerConnect Code - Mainly for Auto-Connecting Wallets on Page Reload
 
-### Making a Progressive Web App
+```typescript
+import { coinbaseWallet } from "./coinbaseWallet";
+import { metaMask } from "./metaMask";
+import { walletConnectV2 } from "./walletConnectV2";
+import { Connector } from '@web3-react/types'
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+async function connect(connector:Connector, wallet:String) {
+  try {
+    if (connector.connectEagerly) {
+      console.log("connecting egarly =>"+wallet)
+      await connector.connectEagerly();
+    } else {
+      console.log("connecting active from egarly =>"+wallet)
+      await connector.activate();
+    }
+  } catch (error) {
+    console.debug(`web3-react eager connection error from ${wallet}: ${error}`);
+  }
+}
 
-### Advanced Configuration
+export default function useEgarlyConnect() {
+  const walletType = localStorage.getItem("walletType") || "no connection found";
+  console.log({walletType})
+  if (walletType === "MetaMask") {
+    connect(metaMask, walletType);
+  } else if (walletType === "WalletConnect V2") {
+    connect(walletConnectV2, walletType);
+  } else if (walletType === "Coinbase Wallet") {
+    connect(coinbaseWallet, walletType);
+  }
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Your app.js File Will Look Like This 
 
-### Deployment
+```typescript 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+export default function App() {
+  return (
+    <>
+      <NewWeb3Provider>
+          <BrowserRouter>
+            <Routes>
+              <Route exact path="/" element={<Home />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+      </NewWeb3Provider>
+    </>
+  );
+}
 
-### `npm run build` fails to minify
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## HOME.js 
+
+```typescript
+import { useWeb3React } from "@web3-react/core";
+import Web3 from "web3";
+
+  const { account, provider } = useWeb3React();
+  const lib = provider;
+  const web3 = new Web3(lib?.provider);
+
+const instance = new web3.eth.Contract('JOSN ABI', 'CONTRACT_ADDRESS);
+const contract_instance = new web3.eth.Contract('JOSN ABI', 'CONTRACT_ADDRESS');
+
+const getBalance = async ()  => {
+  const balance = await instance.methods.balanceOf(account).call({ from: account })
+  console.log(balance);
+}
+
+```
+
+### NOTE 
+
+This is just a demo for connecting wallets to make transactions. You can refer to the above repository code. I will add the latest version of web3.js documentation for contract interaction soon, as it's almost the same.
+
+

@@ -12,10 +12,6 @@ import {
 import { hooks as metaMaskHooks, metaMask } from "../connectors/metaMask";
 import { hooks as networkHooks, network } from "../connectors/network";
 import {
-  hooks as walletConnectHooks,
-  walletConnect,
-} from "../connectors/walletConnect";
-import {
   hooks as walletConnectV2Hooks,
   walletConnectV2,
 } from "../connectors/walletConnectV2";
@@ -26,7 +22,6 @@ const connectors: [
   Web3ReactHooks,
 ][] = [
   [metaMask, metaMaskHooks],
-  [walletConnect, walletConnectHooks],
   [walletConnectV2, walletConnectV2Hooks],
   [coinbaseWallet, coinbaseWalletHooks],
   [network, networkHooks],

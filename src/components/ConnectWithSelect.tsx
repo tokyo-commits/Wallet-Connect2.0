@@ -17,6 +17,7 @@ import { CHAINS, getAddChainParameters } from "../chains";
 import { getName } from "../utils";
 import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import { makeStyles } from "tss-react/mui";
+import { Status } from "./Status";
 
 export function ConnectWithSelect({
   connector,
@@ -70,7 +71,6 @@ export function ConnectWithSelect({
   const switchChain = useCallback(
     async (desiredChainId: number) => {
       setDesiredChainId(desiredChainId);
-
       try {
         if (
           // If we're already connected to the desired chain, return
@@ -166,7 +166,6 @@ export function ConnectWithSelect({
     }
   };
 
-  // console.log({ isConnecting, isActivating });
   return (
     <Button
       disabled={isConnecting}
@@ -187,42 +186,10 @@ export function ConnectWithSelect({
           ) : null}
         </Box>
       </Box>
+      <Box>
+        <Status isActivating={isActivating} isActive={isActive} error={error}/>
+      </Box>
       <Box>{loaderRender()}</Box>
-      {/* <div style={{ display: 'flex', flexDirection: 'column' }}> */}
-      {/* <div style={{ marginBottom: '1rem' }} />
-      {isActive ? (
-        error ? (
-          <button onClick={() => switchChain(desiredChainId)}>Try again?</button>
-        ) : (
-          <button
-            onClick={() => {
-              if (connector?.deactivate) {
-                void connector.deactivate()
-              } else {
-                void connector.resetState()
-              }
-              setDesiredChainId(undefined)
-            }}
-          >
-            Disconnect
-          </button>
-        )
-      ) : (
-        <button
-          onClick={() =>
-            connector instanceof GnosisSafe
-              ? void connector
-                  .activate()
-                  .then(() => setError(undefined))
-                  .catch(setError)
-              : switchChain(desiredChainId)
-          }
-          disabled={isActivating || !desiredChainId}
-        >
-          {error ? 'Try again?' : 'Connect'}
-        </button>
-      )} */}
-      {/* </div> */}
     </Button>
   );
 }

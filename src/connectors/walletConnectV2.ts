@@ -5,7 +5,6 @@ import { MAINNET_CHAINS } from "../chains";
 
 const [mainnet, ...optionalChains] = Object.keys(MAINNET_CHAINS).map(Number);
 
-console.log(mainnet, optionalChains);
 export const [walletConnectV2, hooks] = initializeConnector<WalletConnectV2>(
   (actions) =>
     new WalletConnectV2({

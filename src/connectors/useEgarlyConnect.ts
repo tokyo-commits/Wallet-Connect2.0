@@ -20,7 +20,6 @@ async function connect(connector: Connector, wallet: String) {
 export default function useEgarlyConnect() {
   const walletType =
     localStorage.getItem("walletType") || "no connection found";
-  console.log({ walletType });
   if (walletType === "MetaMask") {
     connect(metaMask, walletType);
   } else if (walletType === "WalletConnect V2") {

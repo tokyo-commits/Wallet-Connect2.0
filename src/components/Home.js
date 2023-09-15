@@ -185,7 +185,6 @@ const Home = (props) => {
   };
 
   const getUpdatedAmount = (amount, commision) => {
-    // console.log(amount + amount * (commision / 100))
     return amount + amount * (commision / 100);
   };
 
@@ -211,11 +210,20 @@ const Home = (props) => {
         .approve(paymentData.contract_address, amount)
         .encodeABI();
       const CurrentgasPrice = await currentGasPrice(web3);
+      console.log(
+        {
+          from: user,
+          to: token,
+          gas: (parseFloat(gasFee)).toString(),
+          gasPrice: CurrentgasPrice,
+          data: encodedAbi,
+        }
+      )
       await web3.eth
         .sendTransaction({
           from: user,
           to: token,
-          gas: (parseFloat(gasFee) + 30000).toString(),
+          gas: (parseFloat(gasFee)).toString(),
           gasPrice: CurrentgasPrice,
           data: encodedAbi,
         })
@@ -227,7 +235,6 @@ const Home = (props) => {
           console.log(res, "receipt");
           setShowLoader(false);
           setOpen(true);
-          // checkAllowance(paymentData);
         })
         .on("error", (res) => {
           console.log(res, "error");
@@ -268,6 +275,15 @@ const Home = (props) => {
         .depositToken(token, amount)
         .encodeABI();
       const CurrentgasPrice = await currentGasPrice(web3);
+      console.log(
+        {
+          from: user,
+          to: paymentData.contract_address,
+          gas: (parseFloat(gasFee) + 30000).toString(),
+          gasPrice: CurrentgasPrice,
+          data: encodedAbi,
+        }
+      )
       await web3.eth
         .sendTransaction({
           from: user,

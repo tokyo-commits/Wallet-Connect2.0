@@ -27,7 +27,7 @@ import WrongChain from "./WrongChain";
 
 const Home = (props) => {
   const { classes } = useStyles();
-  const { account, provider } = useWeb3React();
+  const { account, provider, chainId } = useWeb3React();
   const lib = provider;
   const web3 = new Web3(lib?.provider);
   const [showLoader, setShowLoader] = useState(false);
@@ -52,6 +52,8 @@ const Home = (props) => {
       // You can handle the error here, display a message to the user, etc.
     }
   }
+
+  console.log({chainId})
 
   const getPaymentDetails = (data) => {
     setShowLoader(true);
@@ -127,11 +129,11 @@ const Home = (props) => {
     if (account) {
       setOpenWallets(false);
     }
-    if (token && account) {
+    if (token && account && provider) {
       setShowLoader(false);
       getPaymentDetails(jwtDecode(token));
     }
-  }, [account]);
+  }, [account, provider]);
 
   const checkAllowance = async (data) => {
     setShowLoader(true);

@@ -187,7 +187,7 @@ export function ConnectWithSelect({
         </Box>
       </Box>
       <Box>
-        <Status isActivating={isActivating} isActive={isActive} error={error}/>
+        {/* <Status isActivating={isActivating} isActive={isActive} error={error}/>  */}
       </Box>
       <Box>{loaderRender()}</Box>
     </Button>

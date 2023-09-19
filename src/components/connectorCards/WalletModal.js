@@ -3,6 +3,7 @@ import { Modal, Box } from "@mui/material";
 import MetaMaskCard from "./MetaMaskCard";
 import WalletConnectV2Card from "./WalletConnectV2Card";
 import CoinbaseWalletCard from "./CoinbaseWalletCard";
+import { makeStyles } from "tss-react/mui";
 
 export const style = {
   position: "absolute",
@@ -11,13 +12,13 @@ export const style = {
   transform: "translate(-50%, -50%)",
   width: 450,
   borderRadius: "10px",
-  bgcolor: "background.paper",
+  backgroundColor: '#FFFFFF',
   boxShadow: 24,
-  // p: 2,
 };
 
 const WalletModal = ({ handleClose }) => {
   const [open, setOpen] = useState(true);
+  const { classes } = useStyles();
 
   const onClose = () => {
     handleClose();
@@ -31,7 +32,7 @@ const WalletModal = ({ handleClose }) => {
       aria-describedby="modal-modal-description"
       sx={{ zIndex: 9 }}
     >
-      <Box sx={style} style={{ padding: "16px" }}>
+      <Box className={classes.mainModal}>
         <Box>
           <MetaMaskCard />
           <WalletConnectV2Card />
@@ -43,3 +44,15 @@ const WalletModal = ({ handleClose }) => {
 };
 
 export default WalletModal;
+
+export const useStyles = makeStyles()((theme) => {
+  return {
+    mainModal: {
+      ...style,
+      padding: '16px',
+      [theme.breakpoints.down("xs")]: {
+        maxWidth: "300px",
+      },
+    },
+  };
+});

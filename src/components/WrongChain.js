@@ -37,7 +37,8 @@ export default function TransitionsModal({ paymentData }) {
 
   const switchNetwork = async () => {
     const params = parseInt(paymentData.chain_id);
-    console.log({params})
+    console.log({params, provider})
+    // console.log(provider)
     try {
       await provider?.send("wallet_switchEthereumChain", [
         { chainId: `0x${params.toString(16)}` },

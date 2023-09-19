@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Web3 from "web3";
 import { useWeb3React } from "@web3-react/core";
-import { currentGasPrice } from "./CommonFunctions";
+import { currentGasPrice, truncateAddress } from "./CommonFunctions";
 import tokenDepositABI from "../ABI/tokenDeposit.json";
 import boneABI from "../ABI/boneABI.json";
 import fromExponential from "from-exponential";
@@ -21,13 +21,12 @@ import {
   IconButton,
 } from "@mui/material";
 import { makeStyles } from "tss-react/mui";
-import { truncateAddress } from "./CommonFunctions";
 import { toast } from "react-toastify";
 import WrongChain from "./WrongChain";
 
 const Home = (props) => {
   const { classes } = useStyles();
-  const { account, provider, chainId } = useWeb3React();
+  const { account, provider, chainId, connector } = useWeb3React();
   const lib = provider;
   const web3 = new Web3(lib?.provider);
   const [showLoader, setShowLoader] = useState(false);
@@ -493,7 +492,7 @@ const Home = (props) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box className={classes.responsiveModal}>
           <Box className={classes.hading2}>
             <Typography align="center" className={classes.headingtext}>
               {paymentData.approvalNedded
@@ -552,7 +551,7 @@ const Home = (props) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box className={classes.responsiveModal}>
           <Box className={classes.hading2}>
             <Typography align="center" className={classes.headingtext}>
               Approve Transaction
@@ -594,7 +593,7 @@ const Home = (props) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box className={classes.responsiveModal}>
           <Box className={classes.hading2}>
             <Typography align="center" className={classes.headingtext}>
               Unregistered Connection
@@ -636,6 +635,12 @@ export default Home;
 
 export const useStyles = makeStyles()((theme) => {
   return {
+    responsiveModal:{
+      ...style,
+      [theme.breakpoints.down("xs")]: {
+        maxWidth: "300px",
+      },
+    },
     noAccountText: {
       fontSize: "20px",
       fontWeight: "600",
@@ -721,9 +726,14 @@ export const useStyles = makeStyles()((theme) => {
     card: {
       margin: "auto",
       borderRadius: "14px",
-      // padding :'20px',
       minWidth: "500px",
       boxShadow: "0px 4px 34px 0px rgba(0, 0, 0, 0.08)",
+      [theme.breakpoints.down("xs")]: {
+        minWidth: "300px",
+      },
+      [theme.breakpoints.between("sm","xs")]: {
+        minWidth: "350px",
+      },
     },
     mainContainder: {
       paddingTop: "150px",

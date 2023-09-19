@@ -395,7 +395,7 @@ const Home = (props) => {
       {openWallets && (
         <ConnectWallet handleClose={() => setOpenWallets(false)} />
       )}
-      <WrongChain paymentData={paymentData} connector={connector}/>
+      <WrongChain paymentData={paymentData} connector={connector} setShowLoader={setShowLoader}/>
       <Container maxWidth={false} className={classes.mainContainder}>
         <Grid container className={classes.mainGrd}>
           <Grid item md={8} sm={10} className={classes.card}>

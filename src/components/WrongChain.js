@@ -20,7 +20,7 @@ const style = {
   boxShadow: 24,
 };
 
-export default function TransitionsModal({ paymentData, connector }) {
+export default function TransitionsModal({ paymentData, connector, setShowLoader }) {
   const { account, chainId, provider } = useWeb3React();
   const [open, setOpen] = React.useState(false);
 
@@ -29,6 +29,7 @@ export default function TransitionsModal({ paymentData, connector }) {
     if (account && Object.keys(paymentData).length > 1) {
       if (chainId !== parseInt(paymentData.chain_id)) {
         setOpen(true);
+        setShowLoader(false)
       } else {
         setOpen(false);
       }

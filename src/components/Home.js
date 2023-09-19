@@ -111,6 +111,9 @@ const Home = (props) => {
       .then((data) => {
         // Handle the response data
         console.log(data);
+        setTimeout(() => {
+          window.location.href = paymentData.callback_url;
+        }, 3000)
       })
       .catch((error) => {
         // Handle errors
@@ -247,7 +250,7 @@ const Home = (props) => {
           if (res.code === 4001) {
             toast.error("Transaction Denied!");
           } else {
-            toast.error("Something went wrong try again later!");
+            toast.error(res.message);
           }
           setApprovalModal(false);
           setShowLoader(false);
@@ -305,9 +308,6 @@ const Home = (props) => {
           setShowLoader(false);
           setIsfinalTsx(true);
           setOpen(true);
-          setTimeout(() => {
-            window.location.href = paymentData.callback_url;
-          }, 3000)
         })
         .on("receipt", (res) => {
           console.log(res, "receipt");
@@ -317,7 +317,7 @@ const Home = (props) => {
           if (res.code === 4001) {
             toast.error("Transaction Denied!");
           } else {
-            toast.error("Something went wrong try again later!");
+            toast.error(res.message);
           }
           setShowLoader(false);
         });

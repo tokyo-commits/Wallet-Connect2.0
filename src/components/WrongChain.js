@@ -25,7 +25,8 @@ export default function TransitionsModal({ paymentData, connector }) {
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
-    if (account && Object.keys(paymentData).length) {
+    console.log(Object.keys(paymentData).length, paymentData)
+    if (account && Object.keys(paymentData).length > 1) {
       if (chainId !== parseInt(paymentData.chain_id)) {
         setOpen(true);
       } else {

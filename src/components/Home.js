@@ -125,6 +125,11 @@ const Home = (props) => {
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const token = queryParams.get("token");
+    const data = jwtDecode(token);
+    console.log(data)
+    setPaymentData({
+       callback_url: data.base_url+"/document/create/"+data.document_id // https://app-dev.certicos.io/document/create/DOCS5I5ML5JWKRCC4S
+    })
     if (account) {
       setOpenWallets(false);
     }
@@ -300,6 +305,9 @@ const Home = (props) => {
           setShowLoader(false);
           setIsfinalTsx(true);
           setOpen(true);
+          setTimeout(() => {
+            window.location.href = paymentData.callback_url;
+          }, 3000)
         })
         .on("receipt", (res) => {
           console.log(res, "receipt");
@@ -387,7 +395,7 @@ const Home = (props) => {
       {openWallets && (
         <ConnectWallet handleClose={() => setOpenWallets(false)} />
       )}
-      <WrongChain paymentData={paymentData} />
+      <WrongChain paymentData={paymentData} connector={connector}/>
       <Container maxWidth={false} className={classes.mainContainder}>
         <Grid container className={classes.mainGrd}>
           <Grid item md={8} sm={10} className={classes.card}>

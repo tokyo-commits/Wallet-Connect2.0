@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useWeb3React } from "@web3-react/core";
 import { Grid } from "@mui/material";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -19,7 +20,7 @@ const style = {
   boxShadow: 24,
 };
 
-export default function TransitionsModal({ paymentData }) {
+export default function TransitionsModal({ paymentData, connector }) {
   const { account, chainId, provider } = useWeb3React();
   const [open, setOpen] = React.useState(false);
 
@@ -34,6 +35,19 @@ export default function TransitionsModal({ paymentData }) {
       setOpen(false);
     }
   }, [account, chainId, paymentData]);
+
+
+  const switchWithConnector = async () => {
+    try{
+      const params = parseInt(paymentData.chain_id);
+      console.log({params})
+      await connector.activate(params);
+      toast.success("Network Switched Successfully! ")
+    }catch(error){
+      console.log({error: error.message})
+      toast.error(error.message.split("\n")[0])
+    }
+  }
 
   const switchNetwork = async () => {
     const params = parseInt(paymentData.chain_id);
@@ -109,7 +123,7 @@ export default function TransitionsModal({ paymentData }) {
                 </Typography>
               </Box>
               <Button
-                onClick={() => switchNetwork()}
+                onClick={() => switchWithConnector()}
                 variant="contained"
                 style={styles.connectBtn}
               >

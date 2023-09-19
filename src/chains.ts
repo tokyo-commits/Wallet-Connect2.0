@@ -6,6 +6,12 @@ const ETH: AddEthereumChainParameter["nativeCurrency"] = {
   decimals: 18,
 };
 
+const BNB: AddEthereumChainParameter["nativeCurrency"] = {
+  name: "tBNB",
+  symbol: "tBNB",
+  decimals: 18,
+};
+
 const MATIC: AddEthereumChainParameter["nativeCurrency"] = {
   name: "Matic",
   symbol: "MATIC",
@@ -38,6 +44,7 @@ export function getAddChainParameters(
   chainId: number,
 ): AddEthereumChainParameter | number {
   const chainInformation = CHAINS[chainId];
+  console.log({chainInformation})
   if (isExtendedChainInformation(chainInformation)) {
     return {
       chainId,
@@ -102,12 +109,28 @@ export const MAINNET_CHAINS: ChainConfig = {
     nativeCurrency: CELO,
     blockExplorerUrls: ["https://explorer.celo.org"],
   },
+  97: {
+    urls: ["https://data-seed-prebsc-1-s3.binance.org:8545/"],
+    name: "BNB Smart Chain Testnet",
+    nativeCurrency: BNB,
+    blockExplorerUrls: ["https://testnet.bscscan.com/"],
+  },
+  5: {
+    urls: [getInfuraUrlFor("goerli")].filter(Boolean),
+    name: "Görli",
+  },
 };
 
 export const TESTNET_CHAINS: ChainConfig = {
   5: {
     urls: [getInfuraUrlFor("goerli")].filter(Boolean),
     name: "Görli",
+  },
+  97: {
+    urls: ["https://data-seed-prebsc-1-s3.binance.org:8545/"],
+    name: "BNB Smart Chain Testnet",
+    nativeCurrency: BNB,
+    blockExplorerUrls: ["https://testnet.bscscan.com/"],
   },
   420: {
     urls: [

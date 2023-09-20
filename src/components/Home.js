@@ -26,7 +26,7 @@ import WrongChain from "./WrongChain";
 
 const Home = (props) => {
   const { classes } = useStyles();
-  const { account, provider, chainId, connector } = useWeb3React();
+  const { account, provider, connector } = useWeb3React();
   const lib = provider;
   const web3 = new Web3(lib?.provider);
   const [showLoader, setShowLoader] = useState(false);
@@ -353,16 +353,6 @@ const Home = (props) => {
     }
   };
 
-  const calculateCommision = () => {
-    if (paymentData.tokenComission) {
-      return (
-        parseFloat(paymentData.doc_amount) *
-        (paymentData.tokenComission / 100 / 100)
-      );
-    } else {
-      return 0;
-    }
-  };
   return (
     <div>
       <Header url={paymentData.callback_url} />
@@ -426,17 +416,6 @@ const Home = (props) => {
                       <Typography className={classes.innerTExt}>-</Typography>
                       <Typography className={classes.innerTExtleft}>
                         {paymentData.symbol}
-                      </Typography>
-                    </Box>
-                    <Box className={classes.contnet}>
-                      <Box className={classes.contnet}>
-                        <Typography className={classes.innerTExt}>
-                          Transaction Service Fee
-                        </Typography>
-                      </Box>
-                      <Typography className={classes.innerTExt}>-</Typography>
-                      <Typography className={classes.innerTExtleft}>
-                        {calculateCommision()} {paymentData.symbol}
                       </Typography>
                     </Box>
                   </Box>

@@ -40,19 +40,16 @@ const Home = (props) => {
 
   async function fetchData(url) {
     try {
-      const response = await fetch(url); // Make a GET request
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      const data = await response.json(); // Parse response body as JSON
+      const data = await response.json();
       return data;
     } catch (error) {
       console.error("Error fetching data:", error);
-      // You can handle the error here, display a message to the user, etc.
     }
   }
-
-  console.log({chainId})
 
   const getPaymentDetails = (data) => {
     setShowLoader(true);
@@ -73,7 +70,6 @@ const Home = (props) => {
             setIsUserValid(true);
             setShowLoader(false);
           }
-          // console.log(account.toLowerCase() === decode.user_address.toLowerCase(), account.toLowerCase(), decode.user_address.toLowerCase())
         }
       })
       .catch((error) => {
@@ -81,7 +77,6 @@ const Home = (props) => {
         setShowLoader(false);
       });
   };
-  // console.log(paymentData);
   const submitHashToDb = async (hash) => {
     const url = paymentData.save_transaction;
     const data = {
@@ -94,7 +89,7 @@ const Home = (props) => {
       token_name: paymentData.symbol,
       transaction_amount: getUpdatedAmount(
         +paymentData.doc_amount,
-        paymentData.tokenComission / 100,
+        paymentData.tokenComission / 100
       ),
       decimal: paymentData.tokenDecimal,
       network: paymentData.token_network,
@@ -113,7 +108,7 @@ const Home = (props) => {
         console.log(data);
         setTimeout(() => {
           window.location.href = paymentData.callback_url;
-        }, 3000)
+        }, 3000);
       })
       .catch((error) => {
         // Handle errors
@@ -129,10 +124,10 @@ const Home = (props) => {
     const queryParams = new URLSearchParams(window.location.search);
     const token = queryParams.get("token");
     const data = jwtDecode(token);
-    console.log(data)
+    console.log(data);
     setPaymentData({
-       callback_url: data.base_url+"/document/create/"+data.document_id // https://app-dev.certicos.io/document/create/DOCS5I5ML5JWKRCC4S
-    })
+      callback_url: data.base_url + "/document/create/" + data.document_id, // https://app-dev.certicos.io/document/create/DOCS5I5ML5JWKRCC4S
+    });
     if (account) {
       setOpenWallets(false);
     }
@@ -149,20 +144,20 @@ const Home = (props) => {
       const instance = new web3.eth.Contract(boneABI, token);
       const contract_instance = new web3.eth.Contract(
         tokenDepositABI,
-        data.contract_address,
+        data.contract_address
       );
       const allowance = Number(
         await instance.methods
           .allowance(account, data.contract_address)
-          .call({ from: account }),
+          .call({ from: account })
       );
       const symbol = await instance.methods.symbol().call();
       const tokenDecimal = Number(await instance.methods.decimals().call());
       const balance = Number(
-        await instance.methods.balanceOf(account).call({ from: account }),
+        await instance.methods.balanceOf(account).call({ from: account })
       );
       const tokenComission = Number(
-        await contract_instance.methods.checkCommision(token).call(),
+        await contract_instance.methods.checkCommision(token).call()
       );
 
       let approvalNedded;
@@ -170,7 +165,7 @@ const Home = (props) => {
         parseFloat(allowance / Math.pow(10, tokenDecimal)) >=
         getUpdatedAmount(
           parseFloat(data.doc_amount),
-          parseFloat(tokenComission / 100),
+          parseFloat(tokenComission / 100)
         )
       ) {
         approvalNedded = false;
@@ -207,9 +202,9 @@ const Home = (props) => {
         fromExponential(
           getUpdatedAmount(
             parseFloat(paymentData.doc_amount),
-            paymentData.tokenComission / 100,
-          ) * Math.pow(10, paymentData.tokenDecimal),
-        ),
+            paymentData.tokenComission / 100
+          ) * Math.pow(10, paymentData.tokenDecimal)
+        )
       );
       const instance = new web3.eth.Contract(boneABI, token);
       const gasFee = await instance.methods
@@ -219,20 +214,11 @@ const Home = (props) => {
         .approve(paymentData.contract_address, amount)
         .encodeABI();
       const CurrentgasPrice = await currentGasPrice(web3);
-      console.log(
-        {
-          from: user,
-          to: token,
-          gas: (parseFloat(gasFee)).toString(),
-          gasPrice: CurrentgasPrice,
-          data: encodedAbi,
-        }
-      )
       await web3.eth
         .sendTransaction({
           from: user,
           to: token,
-          gas: (parseFloat(gasFee)).toString(),
+          gas: parseFloat(gasFee + 10000).toString(),
           gasPrice: CurrentgasPrice,
           data: encodedAbi,
         })
@@ -261,7 +247,6 @@ const Home = (props) => {
       setShowLoader(false);
     }
   };
-  // console.log(paymentData);
   const callDepositToken = async () => {
     setShowLoader(true);
     try {
@@ -270,12 +255,12 @@ const Home = (props) => {
       const amount = web3.utils.toBN(
         fromExponential(
           parseFloat(paymentData.doc_amount) *
-            Math.pow(10, paymentData.tokenDecimal),
-        ),
+            Math.pow(10, paymentData.tokenDecimal)
+        )
       );
       const instance = new web3.eth.Contract(
         tokenDepositABI,
-        paymentData.contract_address,
+        paymentData.contract_address
       );
       const gasFee = await instance.methods
         .depositToken(token, amount)
@@ -284,20 +269,11 @@ const Home = (props) => {
         .depositToken(token, amount)
         .encodeABI();
       const CurrentgasPrice = await currentGasPrice(web3);
-      console.log(
-        {
-          from: user,
-          to: paymentData.contract_address,
-          gas: (parseFloat(gasFee) + 30000).toString(),
-          gasPrice: CurrentgasPrice,
-          data: encodedAbi,
-        }
-      )
       await web3.eth
         .sendTransaction({
           from: user,
           to: paymentData.contract_address,
-          gas: (parseFloat(gasFee) + 30000).toString(),
+          gas: (parseFloat(gasFee) + 10000).toString(),
           gasPrice: CurrentgasPrice,
           data: encodedAbi,
         })
@@ -351,7 +327,6 @@ const Home = (props) => {
   const handleCopyClick = () => {
     setIsCopied(true);
     navigator.clipboard.writeText(paymentData.hash);
-    // Reset the "Copied!" text after a delay
     setTimeout(() => {
       setIsCopied(false);
     }, 2000);
@@ -364,7 +339,7 @@ const Home = (props) => {
         paymentData.balance <
         getUpdatedAmount(
           +paymentData.doc_amount,
-          paymentData.tokenComission / 100,
+          paymentData.tokenComission / 100
         )
       ) {
         return "Insufficient Funds";
@@ -395,7 +370,11 @@ const Home = (props) => {
       {openWallets && (
         <ConnectWallet handleClose={() => setOpenWallets(false)} />
       )}
-      <WrongChain paymentData={paymentData} connector={connector} setShowLoader={setShowLoader}/>
+      <WrongChain
+        paymentData={paymentData}
+        connector={connector}
+        setShowLoader={setShowLoader}
+      />
       <Container maxWidth={false} className={classes.mainContainder}>
         <Grid container className={classes.mainGrd}>
           <Grid item md={8} sm={10} className={classes.card}>
@@ -433,7 +412,7 @@ const Home = (props) => {
                       <Typography className={classes.innerTExtleft}>
                         {paymentData.doc_size_in_kb
                           ? Number.parseFloat(
-                              paymentData.doc_size_in_kb,
+                              paymentData.doc_size_in_kb
                             ).toFixed(2) + " KB"
                           : ""}
                       </Typography>
@@ -578,7 +557,7 @@ const Home = (props) => {
                 <b>
                   {getUpdatedAmount(
                     +paymentData.doc_amount,
-                    paymentData.tokenComission / 100,
+                    paymentData.tokenComission / 100
                   )}{" "}
                   {paymentData.symbol}
                 </b>{" "}
@@ -643,7 +622,7 @@ export default Home;
 
 export const useStyles = makeStyles()((theme) => {
   return {
-    responsiveModal:{
+    responsiveModal: {
       ...style,
       [theme.breakpoints.down("xs")]: {
         maxWidth: "300px",
@@ -739,7 +718,7 @@ export const useStyles = makeStyles()((theme) => {
       [theme.breakpoints.down("xs")]: {
         minWidth: "300px",
       },
-      [theme.breakpoints.between("sm","xs")]: {
+      [theme.breakpoints.between("sm", "xs")]: {
         minWidth: "350px",
       },
     },

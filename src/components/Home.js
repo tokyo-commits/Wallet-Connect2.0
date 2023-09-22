@@ -122,18 +122,24 @@ const Home = (props) => {
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
+    console.log("Query Parameters:", queryParams);
     const token = queryParams.get("token");
-    const data = jwtDecode(token);
-    console.log(data);
-    setPaymentData({
-      callback_url: data.base_url + "/document/create/" + data.document_id, // https://app-dev.certicos.io/document/create/DOCS5I5ML5JWKRCC4S
-    });
-    if (account) {
-      setOpenWallets(false);
-    }
-    if (token && account && provider) {
-      setShowLoader(false);
-      getPaymentDetails(jwtDecode(token));
+    if (!token) {
+      console.error("Token is missing in the URL");
+    } else {
+      const data = jwtDecode(token);
+
+      console.log(data);
+      setPaymentData({
+        callback_url: data.base_url + "/document/create/" + data.document_id, // https://app-dev.certicos.io/document/create/DOCS5I5ML5JWKRCC4S
+      });
+      if (account) {
+        setOpenWallets(false);
+      }
+      if (token && account && provider) {
+        setShowLoader(false);
+        getPaymentDetails(jwtDecode(token));
+      }
     }
   }, [account, provider]);
 

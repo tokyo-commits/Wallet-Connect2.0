@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NewWeb3Provider from "./components/ProviderExample";
 import Home from "./components/Home";
@@ -9,10 +9,11 @@ import { initializeConnector } from "@web3-react/core";
 import { MetaMask } from "@web3-react/metamask";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Swap from "./components/Swap";
 
-export const [metaMask, hooks] = initializeConnector(
-  (actions) => new MetaMask({ actions }),
-);
+// export const [metaMask, hooks] = initializeConnector(
+//   (actions) => new MetaMask({ actions }),
+// );
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <BrowserRouter>
             <Routes>
               <Route exact path="/" element={<Home />} />
+              <Route exact path="/swap" element={<Swap />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

@@ -17,7 +17,7 @@ let theme = createTheme({
   },
   typography: {
     fontFamily: font,
-    h5: { fontSize: 20, latterSpacing: "0.03rem", fontWeight: "600" },
+    h5: { fontSize: 20, latterSpacing: "0.03rem", fontWeight: "400" },
     h6: {
       fontSize: 18,
       latterSpacing: "0.03rem",

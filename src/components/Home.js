@@ -53,29 +53,33 @@ const Home = (props) => {
 
   const getPaymentDetails = (data) => {
     setShowLoader(true);
-    const apiUrl =
-      data.base_url + "/" + data.end_point + "/" + data.document_id;
-    fetchData(apiUrl)
-      .then((data) => {
-        if (data.message === "Document already updated") {
-          setShowLoader(false);
-          toast.error(data.message);
-        } else {
-          const decode = jwtDecode(data.token);
-          setPaymentData(decode);
-          if (account.toLowerCase() !== decode.user_address.toLowerCase()) {
-            setIsUserValid(false);
-            checkAllowance(decode);
-          } else {
-            setIsUserValid(true);
+    try {
+      const apiUrl =
+        data.base_url + "/" + data.end_point + "/" + data.document_id;
+      fetchData(apiUrl)
+        .then((data) => {
+          if (data.message === "Document already updated") {
             setShowLoader(false);
+            toast.error(data.message);
+          } else {
+            const decode = jwtDecode(data.token);
+            setPaymentData(decode);
+            if (account.toLowerCase() !== decode.user_address.toLowerCase()) {
+              setIsUserValid(false);
+              checkAllowance(decode);
+            } else {
+              setIsUserValid(true);
+              setShowLoader(false);
+            }
           }
-        }
-      })
-      .catch((error) => {
-        console.error("Fetch error:", error);
-        setShowLoader(false);
-      });
+        })
+        .catch((error) => {
+          console.error("Fetch error:", error);
+          setShowLoader(false);
+        });
+    } catch (err) {
+      setShowLoader(true);
+    }
   };
   const submitHashToDb = async (hash) => {
     const url = paymentData.save_transaction;
@@ -124,11 +128,10 @@ const Home = (props) => {
     const queryParams = new URLSearchParams(window.location.search);
     console.log("Query Parameters:", queryParams);
     const token = queryParams.get("token");
-    if (!token) {
+    if(!token){
       console.error("Token is missing in the URL");
-    } else {
+    }else{
       const data = jwtDecode(token);
-
       console.log(data);
       setPaymentData({
         callback_url: data.base_url + "/document/create/" + data.document_id, // https://app-dev.certicos.io/document/create/DOCS5I5ML5JWKRCC4S
@@ -138,9 +141,12 @@ const Home = (props) => {
       }
       if (token && account && provider) {
         setShowLoader(false);
-        getPaymentDetails(jwtDecode(token));
+        if(token){
+          getPaymentDetails(jwtDecode(token));
+        }
       }
     }
+    
   }, [account, provider]);
 
   const checkAllowance = async (data) => {

@@ -5,9 +5,6 @@ import {
   Container,
   Grid,
   Typography,
-  Modal,
-  Tooltip,
-  IconButton,
   Card,
 } from "@mui/material";
 import { makeStyles } from "tss-react/mui";

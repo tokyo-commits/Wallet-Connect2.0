@@ -10,26 +10,36 @@ import {
   Button,
   InputAdornment,
   Avatar,
-  IconButton,
 } from "@mui/material";
 import ETH_ICON from "../assests/eth.png";
-import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
-
+import CloseIcon from "@mui/icons-material/Close";
 const TokenSelectionModal = ({ isOpen, onClose, onSelectToken }) => {
   const [searchTerm, setSearchTerm] = useState("");
+ 
   const tokenList = [
     {
-      name: 'Token 1',
-      iconUrl: ETH_ICON,
+      id: "01coin",
+      symbol: "zoc",
+      name: "01coin",
+      platforms: {},
     },
     {
-      name: 'Token 2',
-      iconUrl: ETH_ICON,
+      id: "0chain",
+      symbol: "zcn",
+      name: "Zus",
+      platforms: {
+        ethereum: "0xb9ef770b6a5e12e45983c5d80545258aa38f3b78",
+        "polygon-pos": "0x8bb30e0e67b11b978a5040144c410e1ccddcba30",
+      },
     },
     {
-      name: 'Token 3',
-      iconUrl: ETH_ICON,
+      id: "0-knowledge-network",
+      symbol: "0kn",
+      name: "0 Knowledge Network",
+      platforms: {
+        ethereum: "0x4594cffbfc09bc5e7ecf1c2e1c1e24f0f7d29036",
+      },
     },
   ];
 
@@ -37,6 +47,13 @@ const TokenSelectionModal = ({ isOpen, onClose, onSelectToken }) => {
     onSelectToken(token);
     onClose();
   };
+
+  const filteredTokens = tokenList.filter((token) => {
+    const searchString = `${token.name} ${token.symbol} ${Object.values(
+      token.platforms
+    ).join(" ")}`.toLowerCase();
+    return searchString.includes(searchTerm.toLowerCase());
+  });
 
   return (
     <Modal open={isOpen} onClose={onClose}>
@@ -48,7 +65,8 @@ const TokenSelectionModal = ({ isOpen, onClose, onSelectToken }) => {
           transform: "translate(-50%, -50%)",
           width: 300,
           bgcolor: "background.paper",
-          borderRadius: "10px",
+          borderRadius: "12px",
+          boxShadow: 24,
           p: 3,
         }}
       >
@@ -61,45 +79,39 @@ const TokenSelectionModal = ({ isOpen, onClose, onSelectToken }) => {
           }}
         >
           <Typography variant="h6">Select Token</Typography>
-          <IconButton onClick={onClose} sx={{ p: 1 }}>
+          <Button onClick={onClose}>
             <CloseIcon />
-          </IconButton>
+          </Button>
         </Box>
-        <TextField
-          label="Search name or paste address"
-          fullWidth
-          variant="outlined"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon color="action" />
-              </InputAdornment>
-            ),
-          }}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+        <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+          <InputAdornment
+            position="start"
+            sx={{ color: "action.active", mr: 1, my: "auto" }}
+          >
+            <SearchIcon color="action" />
+          </InputAdornment>
+
+          <TextField
+            label="Search name or paste address"
+            variant="outlined"
+            fullWidth
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </Box>
+
         <List>
-          {tokenList
-            .filter((token) =>
-              token.name.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((token) => (
-              <ListItem
-                button
-                key={token.name} 
-                onClick={() => handleTokenSelect(token)}
-              >
-                <Avatar
-                  src={token.iconUrl}
-                  alt={`${token.name} icon`}
-                  sx={{ marginRight: 2 }}
-                />
-                <ListItemText primary={token.name} />
-              </ListItem>
-            ))}
+          {filteredTokens.map((token) => (
+            <ListItem key={token.name} onClick={() => handleTokenSelect(token)}>
+              <Avatar
+                src={token.iconUrl}
+                alt={`${token.name} icon`}
+                sx={{ marginRight: 2 }}
+              />
+              <ListItemText primary={token.name} />
+            </ListItem>
+          ))}
         </List>
-       
       </Box>
     </Modal>
   );

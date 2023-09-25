@@ -91,10 +91,7 @@ const Home = (props) => {
       contract_address: paymentData.contract_address,
       token_address: paymentData.token_address,
       token_name: paymentData.symbol,
-      transaction_amount: getUpdatedAmount(
-        +paymentData.doc_amount,
-        paymentData.tokenComission / 100
-      ),
+      transaction_amount: parseFloat(paymentData.doc_amount),
       decimal: paymentData.tokenDecimal,
       network: paymentData.token_network,
     };
@@ -126,11 +123,11 @@ const Home = (props) => {
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
-    console.log("Query Parameters:", queryParams);
+    // console.log("Query Parameters:", queryParams);
     const token = queryParams.get("token");
-    if(!token){
+    if (!token) {
       console.error("Token is missing in the URL");
-    }else{
+    } else {
       const data = jwtDecode(token);
       console.log(data);
       setPaymentData({
@@ -141,12 +138,12 @@ const Home = (props) => {
       }
       if (token && account && provider) {
         setShowLoader(false);
-        if(token){
+        console.log({token: token, length: token.split("").length})
+        if (token.split("").length) {
           getPaymentDetails(jwtDecode(token));
         }
       }
     }
-    
   }, [account, provider]);
 
   const checkAllowance = async (data) => {
@@ -154,10 +151,6 @@ const Home = (props) => {
     try {
       const token = data.token_address;
       const instance = new web3.eth.Contract(boneABI, token);
-      const contract_instance = new web3.eth.Contract(
-        tokenDepositABI,
-        data.contract_address
-      );
       const allowance = Number(
         await instance.methods
           .allowance(account, data.contract_address)
@@ -168,17 +161,10 @@ const Home = (props) => {
       const balance = Number(
         await instance.methods.balanceOf(account).call({ from: account })
       );
-      const tokenComission = Number(
-        await contract_instance.methods.checkCommision(token).call()
-      );
-
       let approvalNedded;
       if (
         parseFloat(allowance / Math.pow(10, tokenDecimal)) >=
-        getUpdatedAmount(
-          parseFloat(data.doc_amount),
-          parseFloat(tokenComission / 100)
-        )
+        parseFloat(data.doc_amount)
       ) {
         approvalNedded = false;
       } else {
@@ -190,7 +176,6 @@ const Home = (props) => {
         symbol,
         approvalNedded,
         tokenDecimal,
-        tokenComission,
         balance: +balance / Math.pow(10, tokenDecimal),
       }));
       setShowLoader(false);
@@ -198,10 +183,6 @@ const Home = (props) => {
       console.log(err);
       setShowLoader(false);
     }
-  };
-
-  const getUpdatedAmount = (amount, commision) => {
-    return amount + amount * (commision / 100);
   };
 
   const approveSender = async () => {
@@ -212,10 +193,8 @@ const Home = (props) => {
       const token = paymentData.token_address;
       const amount = web3.utils.toBN(
         fromExponential(
-          getUpdatedAmount(
-            parseFloat(paymentData.doc_amount),
-            paymentData.tokenComission / 100
-          ) * Math.pow(10, paymentData.tokenDecimal)
+          parseFloat(paymentData.doc_amount) *
+            Math.pow(10, paymentData.tokenDecimal)
         )
       );
       const instance = new web3.eth.Contract(boneABI, token);
@@ -263,7 +242,6 @@ const Home = (props) => {
     setShowLoader(true);
     try {
       const user = account;
-      const token = paymentData.token_address;
       const amount = web3.utils.toBN(
         fromExponential(
           parseFloat(paymentData.doc_amount) *
@@ -275,10 +253,10 @@ const Home = (props) => {
         paymentData.contract_address
       );
       const gasFee = await instance.methods
-        .depositToken(token, amount)
+        .depositToken(amount)
         .estimateGas({ from: user });
       const encodedAbi = await instance.methods
-        .depositToken(token, amount)
+        .depositToken(amount)
         .encodeABI();
       const CurrentgasPrice = await currentGasPrice(web3);
       await web3.eth
@@ -345,15 +323,8 @@ const Home = (props) => {
   };
 
   const handleButton = () => {
-    // console.log(paymentData.balance, getUpdatedAmount(+(paymentData.doc_amount), paymentData.tokenComission / 100))
     if (account && paymentData) {
-      if (
-        paymentData.balance <
-        getUpdatedAmount(
-          +paymentData.doc_amount,
-          paymentData.tokenComission / 100
-        )
-      ) {
+      if (paymentData.balance < parseFloat(paymentData.doc_amount)) {
         return "Insufficient Funds";
       } else if (paymentData.approvalNedded) {
         return "Accept Amount go to Approve";
@@ -546,11 +517,7 @@ const Home = (props) => {
               <Typography align="center">
                 Your final Approval is required to deduct The{" "}
                 <b>
-                  {getUpdatedAmount(
-                    +paymentData.doc_amount,
-                    paymentData.tokenComission / 100
-                  )}{" "}
-                  {paymentData.symbol}
+                  {paymentData.doc_amount} {paymentData.symbol}
                 </b>{" "}
                 from your wallet to Complete the transaction and submit your
                 document to the Approver.

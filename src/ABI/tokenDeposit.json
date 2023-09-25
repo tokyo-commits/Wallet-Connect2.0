@@ -5,7 +5,13 @@
         "internalType": "uint256",
         "name": "_withdrawTimelock",
         "type": "uint256"
-      }
+      },
+      {
+        "internalType": "address",
+        "name": "_certTokenAddress",
+        "type": "address"
+      },
+      { "internalType": "address", "name": "_certWallet", "type": "address" }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -33,11 +39,24 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "txnId",
-        "type": "uint256"
+        "indexed": false,
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
       },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "status",
+        "type": "bool"
+      }
+    ],
+    "name": "AllowToken",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
       {
         "indexed": true,
         "internalType": "address",
@@ -59,11 +78,17 @@
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "certAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "timestamp",
         "type": "uint256"
       }
     ],
-    "name": "Deposit",
+    "name": "Bought",
     "type": "event"
   },
   {
@@ -77,12 +102,50 @@
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "BuyPriceUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "bool",
-        "name": "status",
+        "name": "isSellActive",
         "type": "bool"
       }
     ],
-    "name": "TokenStatus",
+    "name": "BuyToggled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "Deposit",
     "type": "event"
   },
   {
@@ -131,37 +194,54 @@
     "type": "function"
   },
   {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "allowedTokens",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
-      { "internalType": "address", "name": "spender", "type": "address" },
       { "internalType": "address", "name": "tokenAddress", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+      { "internalType": "uint256", "name": "certAmount", "type": "uint256" }
     ],
-    "name": "approve",
+    "name": "buyCERT",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "buyPrices",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "certTokenAddress",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "certWallet",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       { "internalType": "address", "name": "tokenAddress", "type": "address" }
     ],
-    "name": "checkBalance",
+    "name": "contractTokensBalance",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "tokenAddress", "type": "address" }
-    ],
-    "name": "checkCommision",
-    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "tokenAddress", "type": "address" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" }
     ],
     "name": "depositToken",
@@ -173,21 +253,9 @@
     "inputs": [
       { "internalType": "address", "name": "tokenAddress", "type": "address" }
     ],
-    "name": "getTokenTransactions",
-    "outputs": [
-      {
-        "components": [
-          { "internalType": "address", "name": "user", "type": "address" },
-          { "internalType": "address", "name": "token", "type": "address" },
-          { "internalType": "uint256", "name": "amount", "type": "uint256" },
-          { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
-        ],
-        "internalType": "struct TokenDeposit.Transaction[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "disallowToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -199,15 +267,22 @@
       {
         "components": [
           { "internalType": "address", "name": "user", "type": "address" },
-          { "internalType": "address", "name": "token", "type": "address" },
           { "internalType": "uint256", "name": "amount", "type": "uint256" },
-          { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+          { "internalType": "uint256", "name": "timestamp", "type": "uint256" },
+          { "internalType": "bool", "name": "isBuy", "type": "bool" }
         ],
         "internalType": "struct TokenDeposit.Transaction[]",
         "name": "",
         "type": "tuple[]"
       }
     ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isBuyActive",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -226,56 +301,10 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "tokenAddress", "type": "address" },
-      { "internalType": "uint8", "name": "newPercentage", "type": "uint8" }
-    ],
-    "name": "setCommision",
+    "inputs": [],
+    "name": "toggleBuyActive",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "tokenCommision",
-    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "", "type": "address" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
-    ],
-    "name": "tokenTransactions",
-    "outputs": [
-      { "internalType": "address", "name": "user", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "transactionCounter",
-    "outputs": [
-      { "internalType": "uint256", "name": "_value", "type": "uint256" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "name": "transactions",
-    "outputs": [
-      { "internalType": "address", "name": "user", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -294,9 +323,31 @@
   {
     "inputs": [
       { "internalType": "address", "name": "tokenAddress", "type": "address" },
-      { "internalType": "bool", "name": "status", "type": "bool" }
+      { "internalType": "uint256", "name": "price", "type": "uint256" }
     ],
-    "name": "updateTokenStatus",
+    "name": "updateBuyPrice",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newCertTokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "updateCertTokenAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_newCertWallet", "type": "address" }
+    ],
+    "name": "updateCertWallet",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -322,17 +373,10 @@
     "name": "userTransactions",
     "outputs": [
       { "internalType": "address", "name": "user", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+      { "internalType": "uint256", "name": "timestamp", "type": "uint256" },
+      { "internalType": "bool", "name": "isBuy", "type": "bool" }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "name": "whitelistToken",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },

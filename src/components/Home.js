@@ -209,7 +209,7 @@ const Home = (props) => {
         .sendTransaction({
           from: user,
           to: token,
-          gas: parseFloat(gasFee + 10000).toString(),
+          gas: parseFloat(gasFee + 20000).toString(),
           gasPrice: CurrentgasPrice,
           data: encodedAbi,
         })
@@ -263,7 +263,7 @@ const Home = (props) => {
         .sendTransaction({
           from: user,
           to: paymentData.contract_address,
-          gas: (parseFloat(gasFee) + 10000).toString(),
+          gas: (parseFloat(gasFee) + 20000).toString(),
           gasPrice: CurrentgasPrice,
           data: encodedAbi,
         })

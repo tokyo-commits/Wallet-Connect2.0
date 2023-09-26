@@ -11,37 +11,20 @@ import {
   InputAdornment,
   Avatar,
 } from "@mui/material";
-import ETH_ICON from "../assests/eth.png";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+
+export const tokenList = [
+  {
+    id: "1",
+    symbol: "CDUMMY",
+    name: "CDUMMY",
+    tokenAddress: "0x7D93245bFD798D1E118974d6F1b5b4b6d86bc264",
+  },
+];
+
 const TokenSelectionModal = ({ isOpen, onClose, onSelectToken }) => {
   const [searchTerm, setSearchTerm] = useState("");
- 
-  const tokenList = [
-    {
-      id: "01coin",
-      symbol: "zoc",
-      name: "01coin",
-      platforms: {},
-    },
-    {
-      id: "0chain",
-      symbol: "zcn",
-      name: "Zus",
-      platforms: {
-        ethereum: "0xb9ef770b6a5e12e45983c5d80545258aa38f3b78",
-        "polygon-pos": "0x8bb30e0e67b11b978a5040144c410e1ccddcba30",
-      },
-    },
-    {
-      id: "0-knowledge-network",
-      symbol: "0kn",
-      name: "0 Knowledge Network",
-      platforms: {
-        ethereum: "0x4594cffbfc09bc5e7ecf1c2e1c1e24f0f7d29036",
-      },
-    },
-  ];
 
   const handleTokenSelect = (token) => {
     onSelectToken(token);
@@ -49,9 +32,8 @@ const TokenSelectionModal = ({ isOpen, onClose, onSelectToken }) => {
   };
 
   const filteredTokens = tokenList.filter((token) => {
-    const searchString = `${token.name} ${token.symbol} ${Object.values(
-      token.platforms
-    ).join(" ")}`.toLowerCase();
+    const searchString =
+      `${token.name} ${token.symbol} ${token.tokenAddress}).join(" ")}`.toLowerCase();
     return searchString.includes(searchTerm.toLowerCase());
   });
 

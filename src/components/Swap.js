@@ -1,30 +1,66 @@
-import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Typography,
-  Card,
-} from "@mui/material";
+import React, { useState, useEffect, useCallback } from "react";
+import { Box, Button, Container, Grid, Typography, Card } from "@mui/material";
 import { makeStyles } from "tss-react/mui";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import ETH_ICON from "../assests/eth.png";
-import TokenSelectionModal from "./TokenSelectionModal";
+import TokenSelectionModal, { tokenList } from "./TokenSelectionModal";
+import { useWeb3React } from "@web3-react/core";
+import Web3 from "web3";
+import boneABI from "../ABI/boneABI.json";
+
+const InputBox = ({
+  inputText,
+  selectedToken,
+  onSelectToken,
+  isDisabled = false,
+}) => {
+  const { classes } = useStyles();
+  return (
+    <Box className={classes.InputBox}>
+      <Box>
+        <Typography>{inputText}</Typography>
+        <input className={classes.mainInput} placeholder="0.00" />
+      </Box>
+      <Box className={classes.modalButtonBox}>
+        <Button
+          className={classes.modalButton}
+          variant="contained"
+          endIcon={<KeyboardArrowDownRoundedIcon fontSize="large" />}
+          onClick={onSelectToken}
+          disabled={isDisabled}
+        >
+          <img
+            src={selectedToken.iconUrl || ETH_ICON}
+            alt="icon"
+            className={classes.defaultTokenIcon}
+          />
+          {selectedToken.name || tokenList[0].name}
+        </Button>
+
+        <Typography align="right" className={classes.balancetext}>
+          Balance: {selectedToken.balance}
+        </Typography>
+      </Box>
+    </Box>
+  );
+};
 
 const Swap = () => {
   const { classes } = useStyles();
+
+  const { account, provider, connector } = useWeb3React();
+  const lib = provider;
+  const web3 = new Web3(lib?.provider);
+
   const [isModalOpenPay, setIsModalOpenPay] = useState(false);
   const [isModalOpenReceive, setIsModalOpenReceive] = useState(false);
-  const [selectedTokenPay, setSelectedTokenPay] = useState({
-    name: "ETH",
-    iconUrl: ETH_ICON,
-  });
+  const [selectedTokenPay, setSelectedTokenPay] = useState(tokenList[0]);
   const [selectedTokenReceive, setSelectedTokenReceive] = useState({
     name: "CTS",
     iconUrl: ETH_ICON,
+    tokenAddress: "0xEDd26a862b25232319E19B8B94d927054B5030BE",
   });
 
   const handleOpenModalPay = () => {
@@ -53,36 +89,21 @@ const Swap = () => {
     handleCloseModalReceive();
   };
 
-  const InputBox = ({ inputText, selectedToken, onSelectToken }) => {
-    const defaultToken = "ETH";
-    return (
-      <Box className={classes.InputBox}>
-        <Box>
-          <Typography>{inputText}</Typography>
-          <input className={classes.mainInput} placeholder="0.00" />
-        </Box>
-        <Box className={classes.modalButtonBox}>
-          <Button
-            className={classes.modalButton}
-            variant="contained"
-            endIcon={<KeyboardArrowDownRoundedIcon fontSize="large" />}
-            onClick={onSelectToken}
-          >
-            <img
-              src={selectedToken.iconUrl || ETH_ICON}
-              alt="icon"
-              className={classes.defaultTokenIcon}
-            />
-            {selectedToken.name || defaultToken}
-          </Button>
-
-          <Typography align="right" className={classes.balancetext}>
-            Balance: 0.00
-          </Typography>
-        </Box>
-      </Box>
-    );
+  const getBalance = async (token) => {
+    console.log({ token, account });
+    const instance = new web3.eth.Contract(boneABI, token);
+    const balance = await instance.methods
+      .balanceOf(account)
+      .call({ from: account });
+    const tokenDecimal = await instance.methods.decimals().call();
+    setSelectedTokenReceive((pre) => ({...pre, balance: balance / Math.pow(10, tokenDecimal)}));
   };
+
+  useEffect(() => {
+    if (account) {
+      getBalance(selectedTokenReceive.tokenAddress);
+    }
+  }, [account]);
 
   return (
     <Container maxWidth={false}>
@@ -95,6 +116,7 @@ const Swap = () => {
               selectedToken={selectedTokenPay}
               inputText="You pay"
               onSelectToken={handleOpenModalPay}
+              // tokenBalance={getBalance(selectedTokenPay.tokenAddress)}
             />
 
             <Box className={classes.centerArrowBox}>
@@ -107,6 +129,8 @@ const Swap = () => {
               selectedToken={selectedTokenReceive}
               inputText="You receive"
               onSelectToken={handleOpenModalReceive}
+              isDisabled={true}
+              // tokenBalance={getBalance(selectedTokenReceive.tokenAddress)}
             />
 
             <Button variant="contained" className={classes.bottmButtom}>

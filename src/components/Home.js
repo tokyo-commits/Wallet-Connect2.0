@@ -138,7 +138,7 @@ const Home = (props) => {
       }
       if (token && account && provider) {
         setShowLoader(false);
-        console.log({token: token, length: token.split("").length})
+        console.log({ token: token, length: token.split("").length });
         if (token.split("").length) {
           getPaymentDetails(jwtDecode(token));
         }
@@ -154,12 +154,12 @@ const Home = (props) => {
       const allowance = Number(
         await instance.methods
           .allowance(account, data.contract_address)
-          .call({ from: account })
+          .call({ from: account }),
       );
       const symbol = await instance.methods.symbol().call();
       const tokenDecimal = Number(await instance.methods.decimals().call());
       const balance = Number(
-        await instance.methods.balanceOf(account).call({ from: account })
+        await instance.methods.balanceOf(account).call({ from: account }),
       );
       let approvalNedded;
       if (
@@ -194,8 +194,8 @@ const Home = (props) => {
       const amount = web3.utils.toBN(
         fromExponential(
           parseFloat(paymentData.doc_amount) *
-            Math.pow(10, paymentData.tokenDecimal)
-        )
+            Math.pow(10, paymentData.tokenDecimal),
+        ),
       );
       const instance = new web3.eth.Contract(boneABI, token);
       const gasFee = await instance.methods
@@ -245,12 +245,12 @@ const Home = (props) => {
       const amount = web3.utils.toBN(
         fromExponential(
           parseFloat(paymentData.doc_amount) *
-            Math.pow(10, paymentData.tokenDecimal)
-        )
+            Math.pow(10, paymentData.tokenDecimal),
+        ),
       );
       const instance = new web3.eth.Contract(
         tokenDepositABI,
-        paymentData.contract_address
+        paymentData.contract_address,
       );
       const gasFee = await instance.methods
         .depositToken(amount)
@@ -385,7 +385,7 @@ const Home = (props) => {
                       <Typography className={classes.innerTExtleft}>
                         {paymentData.doc_size_in_kb
                           ? Number.parseFloat(
-                              paymentData.doc_size_in_kb
+                              paymentData.doc_size_in_kb,
                             ).toFixed(2) + " KB"
                           : ""}
                       </Typography>

@@ -23,51 +23,53 @@ Create a React/Next app and then add the following packages to your React/Next a
 1. Metamask
 
 ```typescript
-import { initializeConnector } from '@web3-react/core';
-import { MetaMask } from '@web3-react/metamask';
+import { initializeConnector } from "@web3-react/core";
+import { MetaMask } from "@web3-react/metamask";
 
-export const [metaMask, hooks] = initializeConnector<MetaMask>((actions) => new MetaMask({ actions }));
+export const [metaMask, hooks] = initializeConnector<MetaMask>(
+  (actions) => new MetaMask({ actions }),
+);
 ```
 
 2. Wallet Connect 2.0
 
 ```typescript
-import { initializeConnector } from '@web3-react/core'
-import { WalletConnect as WalletConnectV2 } from '@web3-react/walletconnect-v2'
+import { initializeConnector } from "@web3-react/core";
+import { WalletConnect as WalletConnectV2 } from "@web3-react/walletconnect-v2";
 
 export const [walletConnectV2, hooks] = initializeConnector<WalletConnectV2>(
   (actions) =>
     new WalletConnectV2({
       actions,
       options: {
-        projectId: 'YOUR_PROJECT_ID', // take project id from wallet connect 2.0 Visit https://walletconnect.com/ for more information.
-        chains: [1], //  by default only one mainnet chain allowed 
-        optionalChains:[], // you can added mainnet & testnet chains both here for ex. [1, 4, 5,96,57....]
+        projectId: "YOUR_PROJECT_ID", // take project id from wallet connect 2.0 Visit https://walletconnect.com/ for more information.
+        chains: [1], //  by default only one mainnet chain allowed
+        optionalChains: [], // you can added mainnet & testnet chains both here for ex. [1, 4, 5,96,57....]
         showQrModal: true,
       },
-    })
-)
+    }),
+);
 ```
 
-3. CoinBase 
+3. CoinBase
 
 ```typescript
-import { CoinbaseWallet } from '@web3-react/coinbase-wallet'
-import { initializeConnector } from '@web3-react/core'
+import { CoinbaseWallet } from "@web3-react/coinbase-wallet";
+import { initializeConnector } from "@web3-react/core";
 
 export const [coinbaseWallet, hooks] = initializeConnector<CoinbaseWallet>(
   (actions) =>
     new CoinbaseWallet({
       actions,
       options: {
-        url:[], // you can added mainnet & testnet chains both here for ex. [1, 4, 5,96,57....]
-        appName: 'web3-react',
+        url: [], // you can added mainnet & testnet chains both here for ex. [1, 4, 5,96,57....]
+        appName: "web3-react",
       },
-    })
-)
+    }),
+);
 ```
-### Next, Make Connections and Eager Connections with Hooks and Set the Provider in Your Root File
 
+### Next, Make Connections and Eager Connections with Hooks and Set the Provider in Your Root File
 
 ```typescript
 import { hooks, metaMask } from '../../connectors/metaMask'
@@ -128,15 +130,15 @@ export default function Web3ProviderNew({children}:any) {
 import { coinbaseWallet } from "./coinbaseWallet";
 import { metaMask } from "./metaMask";
 import { walletConnectV2 } from "./walletConnectV2";
-import { Connector } from '@web3-react/types'
+import { Connector } from "@web3-react/types";
 
-async function connect(connector:Connector, wallet:String) {
+async function connect(connector: Connector, wallet: String) {
   try {
     if (connector.connectEagerly) {
-      console.log("connecting egarly =>"+wallet)
+      console.log("connecting egarly =>" + wallet);
       await connector.connectEagerly();
     } else {
-      console.log("connecting active from egarly =>"+wallet)
+      console.log("connecting active from egarly =>" + wallet);
       await connector.activate();
     }
   } catch (error) {
@@ -145,8 +147,9 @@ async function connect(connector:Connector, wallet:String) {
 }
 
 export default function useEgarlyConnect() {
-  const walletType = localStorage.getItem("walletType") || "no connection found";
-  console.log({walletType})
+  const walletType =
+    localStorage.getItem("walletType") || "no connection found";
+  console.log({ walletType });
   if (walletType === "MetaMask") {
     connect(metaMask, walletType);
   } else if (walletType === "WalletConnect V2") {
@@ -157,9 +160,9 @@ export default function useEgarlyConnect() {
 }
 ```
 
-## Your app.js File Will Look Like This 
+## Your app.js File Will Look Like This
 
-```typescript 
+```typescript
 
 export default function App() {
   return (
@@ -178,7 +181,7 @@ export default function App() {
 
 ```
 
-## HOME.js 
+## HOME.js
 
 ```typescript
 import { useWeb3React } from "@web3-react/core";
@@ -198,8 +201,6 @@ const getBalance = async ()  => {
 
 ```
 
-### NOTE 
+### NOTE
 
 This is just a demo for connecting wallets to make transactions. You can refer to the above repository code. I will add the latest version of web3.js documentation for contract interaction soon, as it's almost the same.
-
-

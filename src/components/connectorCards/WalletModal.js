@@ -12,7 +12,7 @@ export const style = {
   transform: "translate(-50%, -50%)",
   width: 450,
   borderRadius: "10px",
-  backgroundColor: '#FFFFFF',
+  backgroundColor: "#FFFFFF",
   boxShadow: 24,
 };
 
@@ -49,7 +49,7 @@ export const useStyles = makeStyles()((theme) => {
   return {
     mainModal: {
       ...style,
-      padding: '16px',
+      padding: "16px",
       [theme.breakpoints.down("xs")]: {
         maxWidth: "300px",
       },

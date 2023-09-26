@@ -20,16 +20,20 @@ const style = {
   boxShadow: 24,
 };
 
-export default function TransitionsModal({ paymentData, connector, setShowLoader }) {
+export default function TransitionsModal({
+  paymentData,
+  connector,
+  setShowLoader,
+}) {
   const { account, chainId, provider } = useWeb3React();
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
-    console.log(Object.keys(paymentData).length, paymentData)
+    console.log(Object.keys(paymentData).length, paymentData);
     if (account && Object.keys(paymentData).length > 1) {
       if (chainId !== parseInt(paymentData.chain_id)) {
         setOpen(true);
-        setShowLoader(false)
+        setShowLoader(false);
       } else {
         setOpen(false);
       }
@@ -38,22 +42,21 @@ export default function TransitionsModal({ paymentData, connector, setShowLoader
     }
   }, [account, chainId, paymentData]);
 
-
   const switchWithConnector = async () => {
-    try{
+    try {
       const params = parseInt(paymentData.chain_id);
-      console.log({params})
+      console.log({ params });
       await connector.activate(params);
-      toast.success("Network Switched Successfully! ")
-    }catch(error){
-      console.log({error: error.message})
-      toast.error(error.message.split("\n")[0])
+      toast.success("Network Switched Successfully! ");
+    } catch (error) {
+      console.log({ error: error.message });
+      toast.error(error.message.split("\n")[0]);
     }
-  }
+  };
 
   const switchNetwork = async () => {
     const params = parseInt(paymentData.chain_id);
-    console.log({params, provider})
+    console.log({ params, provider });
     // console.log(provider)
     try {
       await provider?.send("wallet_switchEthereumChain", [

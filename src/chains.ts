@@ -44,7 +44,7 @@ export function getAddChainParameters(
   chainId: number,
 ): AddEthereumChainParameter | number {
   const chainInformation = CHAINS[chainId];
-  console.log({chainInformation})
+  console.log({ chainInformation });
   if (isExtendedChainInformation(chainInformation)) {
     return {
       chainId,

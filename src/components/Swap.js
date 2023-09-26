@@ -96,7 +96,10 @@ const Swap = () => {
       .balanceOf(account)
       .call({ from: account });
     const tokenDecimal = await instance.methods.decimals().call();
-    setSelectedTokenReceive((pre) => ({...pre, balance: balance / Math.pow(10, tokenDecimal)}));
+    setSelectedTokenReceive((pre) => ({
+      ...pre,
+      balance: balance / Math.pow(10, tokenDecimal),
+    }));
   };
 
   useEffect(() => {
